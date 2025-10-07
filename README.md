@@ -15,13 +15,12 @@ from ultralytics import YOLO
 model = YOLO("model.pt")
 model.export(format="onnx")
 ```
-3. Start a chat with BotFather by typing `/start`.
-4. Create a new bot with the `/newbot` command.
-5. Follow the prompts to name your bot and choose a username.
-6. Copy the API token provided by BotFather.
-
 </details>
 
+/home/$USER/docker_hailo/hailo8_ai_sw_suite_2025-10_docker.zip
+/home/$USER/docker_hailo/train/images/(60%–80% of your photos)
+/home/$USER/docker_hailo/shared_with_docker/models/model.onnx
+/home/bob/Docker_hailo/shared_with_docker/doc/
 
 ## 📦 Setup 
 1. ``
