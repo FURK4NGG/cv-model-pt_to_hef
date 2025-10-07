@@ -67,7 +67,7 @@ model.export(format="onnx")
    > -v /etc/timezone:/etc/timezone:ro \
    > -v /etc/localtime:/etc/localtime:ro`
 4. `./hailo_ai_sw_suite_docker_run.sh --override`
-   > *If you want to continue with your already configured project*./hailo_ai_sw_suite_docker_run.sh --resume 
+   > * If you want to continue with your already configured project *./hailo_ai_sw_suite_docker_run.sh --resume 
 6. /home/$USER/docker_hailo/train/images/(60%–80% of your photos)  
    /home/$USER/docker_hailo/shared_with_docker/models/model.onnx  
    /home/bob/Docker_hailo/shared_with_docker/doc/  
