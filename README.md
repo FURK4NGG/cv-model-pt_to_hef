@@ -81,7 +81,7 @@ model.export(format="onnx")
 > ⚠️ **Warning:** The number after --classes must match the number of object classes used in your model
 yolov11n.hef  
 > For example:Objects[rock,paper,scissors] --> --classes 3  
-> ⚠️ **Warning:** You can check and choose different model in this directory '/local/workspace/hailo_model_zoo/hailo_model_zoo/cfg/networks'  
+> ⚠️ **Warning:** You can check and choose different yolo models in this directory '/local/workspace/hailo_model_zoo/hailo_model_zoo/cfg/networks'  
 5. `mv yolov11n.hef /local/shared_with_docker/doc/`
 
 ## ✅ Resoults
