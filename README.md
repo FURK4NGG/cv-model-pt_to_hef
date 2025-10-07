@@ -5,7 +5,7 @@
 <details>
 <summary>1. Prepare docker enviroment </summary>
 
-1. Run this .py code at the same directory with your .pt model:
+1. Follow these steps:
 ```bash
 sudo systemctl stop docker.socket
 sudo systemctl stop docker.service
@@ -13,13 +13,13 @@ sudo systemctl stop docker.service
 sudo systemctl status docker
 sudo systemctl status docker.socket
 
-sudo mv /var/lib/docker /home/bob/docker_data
-sudo ln -s /home/bob/docker_data /var/lib/docker
+sudo mv /var/lib/docker /home/$USER/docker_data
+sudo ln -s /home/$USER/docker_data /var/lib/docker
 
 sudo systemctl start docker
 sudo systemctl enable docker
 
-Docker Root Dir: /home/bob/docker_data
+Docker Root Dir: /home/$USER/docker_data
 ```
 </details>
 1. `Go to the`[`HAILO AI DEVELOPER ZONE`](https://hailo.ai/developer-zone/software-downloads/)`adress and download .zip file with this configration: Software Package[AI Software Suite], Software Sub-Package[AI Software Suite], Architecture[x86], OS[Linux], Python Version[3.8]`
