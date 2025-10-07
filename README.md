@@ -23,7 +23,10 @@ model.export(format="onnx")
 /home/bob/Docker_hailo/shared_with_docker/doc/
 
 ## 📦 Setup 
-1. unzip hailo8_ai_sw_suite_2025-10_docker.zip -d /home/$USER/docker_hailo
+1. `unzip hailo8_ai_sw_suite_2025-10_docker.zip -d /home/$USER/docker_hailo`
+2. `Edit your .sh document and delete `
+3. `./hailo_ai_sw_suite_docker_run.sh --override`
+ 
 
 
 
