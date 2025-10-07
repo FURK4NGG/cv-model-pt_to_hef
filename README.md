@@ -68,9 +68,13 @@ model.export(format="onnx")
    > -v /etc/localtime:/etc/localtime:ro`
 4. `./hailo_ai_sw_suite_docker_run.sh --override`
    > *If you want to continue with your already configured project:*./hailo_ai_sw_suite_docker_run.sh --resume 
-6. /home/$USER/docker_hailo/train/images/(60%–80% of your photos)  
+5. /home/$USER/docker_hailo/train/images/(60%–80% of your photos)  
    /home/$USER/docker_hailo/shared_with_docker/models/model.onnx  
-   /home/bob/Docker_hailo/shared_with_docker/doc/  
+   /home/bob/Docker_hailo/shared_with_docker/doc/
+6. mv train/ shared_with_docker/ 
+7. `git clone https://github.com/LukeDitria/RasPi_YOLO.git`
+8.  `cd RasPi_YOLO/` Then you shold be in '/local/workspace/RasPi_YOLO/' directory
+9.  python hailo_calibration_data.py     --data_dir /local/shared_with_docker/train/images/     --target_dir /local/shared_with_docker/doc
 
 
 
