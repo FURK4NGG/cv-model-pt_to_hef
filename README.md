@@ -38,17 +38,17 @@ model.export(format="onnx")
 ```
 </details>
 
-/home/$USER/docker_hailo/hailo8_ai_sw_suite_2025-10_docker.zip  
-/home/$USER/docker_hailo/train/images/(60%–80% of your photos)  
-/home/$USER/docker_hailo/shared_with_docker/models/model.onnx  
-/home/bob/Docker_hailo/shared_with_docker/doc/  
 
 ## 📦 Setup 
 1. `unzip hailo8_ai_sw_suite_2025-10_docker.zip -d /home/$USER/docker_hailo`
-2. `Edit your .sh document and delete these lines:`
+2. `cd /home/$USER/docker_hailo/`
+3. `Edit your .sh document and delete these lines:`
    > -v /etc/timezone:/etc/timezone:ro \
    > -v /etc/localtime:/etc/localtime:ro`
-3. `./hailo_ai_sw_suite_docker_run.sh --override`
+4. `./hailo_ai_sw_suite_docker_run.sh --override`
+5. /home/$USER/docker_hailo/train/images/(60%–80% of your photos)  
+   /home/$USER/docker_hailo/shared_with_docker/models/model.onnx  
+   /home/bob/Docker_hailo/shared_with_docker/doc/  
 
 
 
