@@ -61,7 +61,10 @@ model.export(format="onnx")
 
 
 ## 📦 Setup 
-1. `unzip hailo8_ai_sw_suite_2025-10_docker.zip -d /home/$USER/docker_hailo`
+```bash
+unzip hailo8_ai_sw_suite_2025-10_docker.zip -d /home/$USER/docker_hailo
+```
+1. ``
 2. `cd /home/$USER/docker_hailo/`
 3. `Edit your .sh document and delete these lines:`
    > -v /etc/timezone:/etc/timezone:ro \
