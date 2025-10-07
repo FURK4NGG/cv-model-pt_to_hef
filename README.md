@@ -44,10 +44,10 @@ model.export(format="onnx")
 
 ## 📦 Setup 
 1. `unzip hailo8_ai_sw_suite_2025-10_docker.zip -d /home/$USER/docker_hailo`
-2. `Edit your .sh document and delete
-3.   -v /etc/timezone:/etc/timezone:ro \
-     -v /etc/localtime:/etc/localtime:ro`
-4. `./hailo_ai_sw_suite_docker_run.sh --override`
+2. `Edit your .sh document and delete`
+   > -v /etc/timezone:/etc/timezone:ro \
+   > -v /etc/localtime:/etc/localtime:ro`
+3. `./hailo_ai_sw_suite_docker_run.sh --override`
 
 sudo systemctl stop docker.socket
 sudo systemctl stop docker.service
