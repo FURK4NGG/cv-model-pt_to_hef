@@ -62,19 +62,21 @@ model.export(format="onnx")
 
 ## 📦 Setup  
 
-1. ``` bash unzip hailo8_ai_sw_suite_2025-10_docker.zip -d /home/$USER/docker_hailo ```
-2. `cd /home/$USER/docker_hailo/`
-3. `Edit your .sh document and delete these lines:`
+1. ``` bash
+2. unzip hailo8_ai_sw_suite_2025-10_docker.zip -d /home/$USER/docker_hailo
+3. ```
+4. `cd /home/$USER/docker_hailo/`
+5. `Edit your .sh document and delete these lines:`
    > -v /etc/timezone:/etc/timezone:ro \
    > -v /etc/localtime:/etc/localtime:ro`
-4. `./hailo_ai_sw_suite_docker_run.sh --override`
+6. `./hailo_ai_sw_suite_docker_run.sh --override`
    > *If you want to continue with your already configured project:*./hailo_ai_sw_suite_docker_run.sh --resume 
-5. /home/$USER/docker_hailo/shared_with_docker/train/images/(60%–80% of your photos)  
+7. /home/$USER/docker_hailo/shared_with_docker/train/images/(60%–80% of your photos)  
    /home/$USER/docker_hailo/shared_with_docker/models/model.onnx  
-6. `git clone https://github.com/LukeDitria/RasPi_YOLO.git`
-7.  `cd RasPi_YOLO/` Then you shold be in '/local/workspace/RasPi_YOLO/' directory
-8.  `python hailo_calibration_data.py     --data_dir /local/shared_with_docker/train/images/     --target_dir /local/shared_with_docker/doc`
-9.  `hailomz compile --ckpt /local/shared_with_docker/models/model.onnx --calib-path /local/shared_with_docker/doc/calib/ --yaml /local/workspace/hailo_model_zoo/hailo_model_zoo/cfg/networks/yolov11n.yaml --classes 2 --hw-arch hailo8`
+8. `git clone https://github.com/LukeDitria/RasPi_YOLO.git`
+9.  `cd RasPi_YOLO/` Then you shold be in '/local/workspace/RasPi_YOLO/' directory
+10.  `python hailo_calibration_data.py     --data_dir /local/shared_with_docker/train/images/     --target_dir /local/shared_with_docker/doc`
+11.  `hailomz compile --ckpt /local/shared_with_docker/models/model.onnx --calib-path /local/shared_with_docker/doc/calib/ --yaml /local/workspace/hailo_model_zoo/hailo_model_zoo/cfg/networks/yolov11n.yaml --classes 2 --hw-arch hailo8`
 
 
 
