@@ -61,7 +61,7 @@ model.export(format="onnx")
 
 
 ## 📦 Setup 
-1. ```bash
+```bash
 unzip hailo8_ai_sw_suite_2025-10_docker.zip -d /home/$USER/docker_hailo
 ```
 1. ``
