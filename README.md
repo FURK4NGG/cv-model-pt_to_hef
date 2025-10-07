@@ -72,8 +72,8 @@ model.export(format="onnx")
    /home/$USER/docker_hailo/shared_with_docker/models/model.onnx  
 6. `git clone https://github.com/LukeDitria/RasPi_YOLO.git`
 7.  `cd RasPi_YOLO/` Then you shold be in '/local/workspace/RasPi_YOLO/' directory
-8.  python hailo_calibration_data.py     --data_dir /local/shared_with_docker/train/images/     --target_dir /local/shared_with_docker/doc
-
+8.  `python hailo_calibration_data.py     --data_dir /local/shared_with_docker/train/images/     --target_dir /local/shared_with_docker/doc`
+9.  `hailomz compile --ckpt /local/shared_with_docker/models/model.onnx --calib-path /local/shared_with_docker/doc/calib/ --yaml /local/workspace/hailo_model_zoo/hailo_model_zoo/cfg/networks/yolov11n.yaml --classes 2 --hw-arch hailo8`
 
 
 
