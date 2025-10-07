@@ -70,12 +70,9 @@ model.export(format="onnx")
    > *If you want to continue with your already configured project:*./hailo_ai_sw_suite_docker_run.sh --resume 
 5. /home/$USER/docker_hailo/shared_with_docker/train/images/(60%–80% of your photos)  
    /home/$USER/docker_hailo/shared_with_docker/models/model.onnx  
-6. In normal terminal(run):
-    cd /home/$USER/docker_hailo/
-    mv train/ shared_with_docker/ 
-9. `git clone https://github.com/LukeDitria/RasPi_YOLO.git`
-10.  `cd RasPi_YOLO/` Then you shold be in '/local/workspace/RasPi_YOLO/' directory
-11.  python hailo_calibration_data.py     --data_dir /local/shared_with_docker/train/images/     --target_dir /local/shared_with_docker/doc
+6. `git clone https://github.com/LukeDitria/RasPi_YOLO.git`
+7.  `cd RasPi_YOLO/` Then you shold be in '/local/workspace/RasPi_YOLO/' directory
+8.  python hailo_calibration_data.py     --data_dir /local/shared_with_docker/train/images/     --target_dir /local/shared_with_docker/doc
 
 
 
