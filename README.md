@@ -23,7 +23,8 @@ model.export(format="onnx")
 /home/bob/Docker_hailo/shared_with_docker/doc/
 
 ## 📦 Setup 
-1. ``
+1. unzip hailo8_ai_sw_suite_2025-10_docker.zip -d /home/$USER/docker_hailo
+
 
 
 ## 🎉 Run  
