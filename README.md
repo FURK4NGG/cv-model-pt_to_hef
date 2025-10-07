@@ -71,13 +71,16 @@ model.export(format="onnx")
    > *If you want to continue with your already configured project:*./hailo_ai_sw_suite_docker_run.sh --resume 
 5. /home/$USER/docker_hailo/shared_with_docker/train/images/(60%–80% of your photos)  
    /home/$USER/docker_hailo/shared_with_docker/models/model.onnx  
-6. `git clone https://github.com/LukeDitria/RasPi_YOLO.git`
-7.  `cd RasPi_YOLO/` Then you shold be in '/local/workspace/RasPi_YOLO/' directory
-8.  `python hailo_calibration_data.py     --data_dir /local/shared_with_docker/train/images/     --target_dir /local/shared_with_docker/doc`
-9.  `hailomz compile --ckpt /local/shared_with_docker/models/model.onnx --calib-path /local/shared_with_docker/doc/calib/ --yaml /local/workspace/hailo_model_zoo/hailo_model_zoo/cfg/networks/yolov11n.yaml --classes 2 --hw-arch hailo8`
+
+
+## 🎉 Run 
+1. `git clone https://github.com/LukeDitria/RasPi_YOLO.git`
+2.  `cd RasPi_YOLO/` Then you shold be in '/local/workspace/RasPi_YOLO/' directory
+3.  `python hailo_calibration_data.py     --data_dir /local/shared_with_docker/train/images/     --target_dir /local/shared_with_docker/doc`
+4. `hailomz compile --ckpt /local/shared_with_docker/models/model.onnx --calib-path /local/shared_with_docker/doc/calib/ --yaml /local/workspace/hailo_model_zoo/hailo_model_zoo/cfg/networks/yolov11n.yaml --classes 2 --hw-arch hailo8`
 > ⚠️ **Warning:** The number after --classes must match the number of object classes used in your model
+yolov11n.hef
+5. ``
 
-
-
-## 🎉 Run  
-``
+## ✅ Resoults
+-
