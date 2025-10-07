@@ -70,7 +70,6 @@ model.export(format="onnx")
    > *If you want to continue with your already configured project:*./hailo_ai_sw_suite_docker_run.sh --resume 
 5. /home/$USER/docker_hailo/shared_with_docker/train/images/(60%–80% of your photos)  
    /home/$USER/docker_hailo/shared_with_docker/models/model.onnx  
-   /home/bob/docker_hailo/shared_with_docker/doc/
 6. In normal terminal(run):
     cd /home/$USER/docker_hailo/
     mv train/ shared_with_docker/ 
