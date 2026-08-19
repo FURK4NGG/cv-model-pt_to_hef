@@ -74,6 +74,7 @@ model.export(format="onnx")
 
 
 ## 🎉 Run 
+In "(hailo_virtualenv) hailo@user:" terminal:  
 1. `git clone https://github.com/LukeDitria/RasPi_YOLO.git`
 2.  `cd RasPi_YOLO/` Then you shold be in '/local/workspace/RasPi_YOLO/' directory
 3.  `python hailo_calibration_data.py     --data_dir /local/shared_with_docker/train/images/     --target_dir /local/shared_with_docker/doc`
