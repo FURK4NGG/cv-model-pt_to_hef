@@ -78,7 +78,7 @@ In "(hailo_virtualenv) hailo@user:" terminal:
 1. `git clone https://github.com/LukeDitria/RasPi_YOLO.git`
 2.  `cd RasPi_YOLO/` Then you shold be in '/local/workspace/RasPi_YOLO/' directory
 3.  `python hailo_calibration_data.py     --data_dir /local/shared_with_docker/train/images/     --target_dir /local/shared_with_docker/doc`
-4. `hailomz compile --ckpt /local/shared_with_docker/models/model.onnx --calib-path /local/shared_with_docker/doc/calib/ --yaml /local/workspace/hailo_model_zoo/hailo_model_zoo/cfg/networks/yolov11n.yaml --classes 2 --hw-arch hailo8`
+4. `hailomz compile --ckpt /local/shared_with_docker/models/model.onnx --calib-path /local/shared_with_docker/doc/calib/ --yaml /local/workspace/hailo_model_zoo/hailo_model_zoo/cfg/networks/yolov11l.yaml --classes 7 --hw-arch hailo8`
 
 <details>
 <summary>Eger calistirdiktan sonra killed yazarsa sunlari yapabilirsin:</summary>
