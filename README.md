@@ -79,6 +79,202 @@ In "(hailo_virtualenv) hailo@user:" terminal:
 2.  `cd RasPi_YOLO/` Then you shold be in '/local/workspace/RasPi_YOLO/' directory
 3.  `python hailo_calibration_data.py     --data_dir /local/shared_with_docker/train/images/     --target_dir /local/shared_with_docker/doc`
 4. `hailomz compile --ckpt /local/shared_with_docker/models/model.onnx --calib-path /local/shared_with_docker/doc/calib/ --yaml /local/workspace/hailo_model_zoo/hailo_model_zoo/cfg/networks/yolov11n.yaml --classes 2 --hw-arch hailo8`
+
+<details>
+<summary>Eger calistirdiktan sonra killed yazarsa sunlari yapabilirsin:</summary>
+Container dışında, normal host terminalinde:
+sudo journalctl -k -b \
+  | grep -Ei "out of memory|oom|killed process"
+
+Arch Linux’ta ayrıca:
+sudo dmesg -T \
+  | grep -Ei "out of memory|oom|killed process"
+
+Şuna benzer bir çıktı çıkarsa teşhis kesindir:
+
+>Out of memory: Killed process ...
+>Killed process ... python
+
+
+
+free -h
+swapon --show
+>Mem:   27Gi
+>Swap:  32Gi
+
+
+
+Docker bellek sınırını kontrol et
+Container adını öğren:
+docker ps --format "table {{.ID}}\t{{.Names}}\t{{.Status}}"
+
+Ardından gerçek container adını kullan:
+docker inspect CONTAINER_ADI \
+  --format 'Memory={{.HostConfig.Memory}} MemorySwap={{.HostConfig.MemorySwap}}'
+
+Şöyle çıkarsa özel sınır yoktur:
+>Memory=0 MemorySwap=0
+
+
+1. Orijinal YOLO11l ALLS dosyasını bul
+find /local/workspace/hailo_model_zoo/hailo_model_zoo/cfg/alls -type f -name "yolov11l.alls"
+
+Örneğin şu sonucu vermeli:
+
+/local/workspace/hailo_model_zoo/hailo_model_zoo/cfg/alls/generic/yolov11l.alls
+2. Bulunan yolu değişkene kaydet
+DEFAULT_ALLS="$(find /local/workspace/hailo_model_zoo/hailo_model_zoo/cfg/alls -type f -name "yolov11l.alls" -print -quit)"
+
+Kontrol et:
+
+echo "$DEFAULT_ALLS"
+
+Çıktı boş olmamalı ve sonunda şu bulunmalı:
+
+yolov11l.alls
+
+Bu değişken yalnızca dosya yolunu geçici olarak saklıyor. Herhangi bir dosyayı değiştirmiyor.
+
+3. Orijinal finetune ayarlarını görüntüle
+sed -n '/post_quantization_optimization(finetune/,/nms_postprocess/p' "$DEFAULT_ALLS"
+
+Çıktının sonunda yaklaşık olarak şu bulunmalı:
+
+epochs=4, batch_size=4)
+4. Orijinal ALLS dosyasını ortak klasöre kopyala
+cp -f "$DEFAULT_ALLS" /local/shared_with_docker/doc/yolov11l_low_memory.alls
+
+Kontrol et:
+
+ls -lh /local/shared_with_docker/doc/yolov11l_low_memory.alls
+
+Bu işlem Hailo Model Zoo içindeki orijinal dosyayı değiştirmez.
+
+5. QAT batch size değerini 4’ten 1’e düşür
+sed -i 's/batch_size=4)/batch_size=1)/' /local/shared_with_docker/doc/yolov11l_low_memory.alls
+
+Bu komut yalnızca şu değeri değiştirir:
+
+epochs=4, batch_size=4)
+
+Yeni değer:
+
+epochs=4, batch_size=1)
+
+Calibration satırındaki:
+
+model_optimization_config(calibration, batch_size=2)
+
+değişmez. Ona dokunmuyoruz.
+
+6. Gerçek NMS JSON dosyasını bul
+NMS_JSON="$(find /local/workspace/hailo_model_zoo/hailo_model_zoo/cfg -type f -name "yolov11l_nms_config.json" -print -quit)"
+
+Kontrol et:
+
+echo "$NMS_JSON"
+
+Beklenen çıktı:
+
+/local/workspace/hailo_model_zoo/hailo_model_zoo/cfg/postprocess_config/yolov11l_nms_config.json
+
+Dosyanın bulunduğunu doğrula:
+
+ls -lh "$NMS_JSON"
+7. Göreli NMS yolunu mutlak yolla değiştir
+sed -i "s#../../postprocess_config/yolov11l_nms_config.json#$NMS_JSON#" /local/shared_with_docker/doc/yolov11l_low_memory.alls
+
+Bu gerekli çünkü özel ALLS dosyasını orijinal klasöründen çıkarıp şuraya koyduk:
+
+/local/shared_with_docker/doc/
+8. Yapılan bütün değişiklikleri kontrol et
+sed -n '1,15p' /local/shared_with_docker/doc/yolov11l_low_memory.alls
+
+Özellikle şu satırları kontrol et:
+
+model_optimization_config(calibration, batch_size=2)
+loss_factors=[1,1,1,2,2,2,2,2,2], epochs=4, batch_size=1)
+nms_postprocess("/local/workspace/hailo_model_zoo/hailo_model_zoo/cfg/postprocess_config/yolov11l_nms_config.json", meta_arch=yolov8, engine=cpu)
+
+Yalnızca ilgili bölümü görmek için:
+
+sed -n '/post_quantization_optimization(finetune/,/nms_postprocess/p' /local/shared_with_docker/doc/yolov11l_low_memory.alls
+
+Senin kullandığın şu komut:
+
+grep -nE "finetune|nms_postprocess" /local/shared_with_docker/doc/yolov11l_low_memory.alls
+
+yalnızca finetune kelimesinin bulunduğu ilk satırı gösterir. batch_size=1 sonraki satırda olduğu için görünmez. Bu nedenle yukarıdaki sed komutuyla bütün bloğu kontrol et.
+
+9. Yeni derleme klasörünü hazırla
+mkdir -p /local/shared_with_docker/doc/low_memory_compile
+cd /local/shared_with_docker/doc/low_memory_compile
+
+Mevcut parse edilmiş ara dosyaları görmek için:
+
+ls -lah
+
+Önceki başarısız denemeden kalan yolov11l.har bulunabilir. Yeni komut bunu yeniden oluşturabilir; sorun değildir.
+
+10. Düşük bellek ayarıyla HEF derlemesini başlat
+
+Tek satır hâlinde:
+
+hailomz compile --ckpt /local/shared_with_docker/models/model.onnx --calib-path /local/shared_with_docker/doc/calib --yaml /local/workspace/hailo_model_zoo/hailo_model_zoo/cfg/networks/yolov11l.yaml --model-script /local/shared_with_docker/doc/yolov11l_low_memory.alls --classes 7 --hw-arch hailo8
+
+Ayarların anlamı:
+
+model.onnx          → YOLO11l modelin
+doc/calib           → Calibration verileri
+yolov11l.yaml       → YOLO11l ağ tanımı
+low_memory.alls     → QAT batch size 1 ayarı
+--classes 7         → Yedi class
+--hw-arch hailo8    → 26 TOPS AI HAT+
+11. Batch size değişikliğinin uygulandığını kontrol et
+
+QAT başladığında önceki gibi:
+
+Epoch 1/4
+1/256
+
+görmemelisin.
+
+Batch size 1 uygulandığında yaklaşık şöyle görünmeli:
+
+Epoch 1/4
+1/1024
+
+Çünkü:
+
+1024 görüntü ÷ batch 1 = 1024 adım
+
+Bu işlem önceki denemeden daha uzun sürer fakat anlık RAM kullanımı daha düşük olur.
+
+
+İşlem başarıyla tamamlanırsa HEF’i bul
+
+Container içinde:
+
+find /local/shared_with_docker/doc/low_memory_compile -type f -name "*.hef"
+
+Beklenen dosya yaklaşık olarak:
+
+/local/shared_with_docker/doc/low_memory_compile/yolov11l.hef
+
+Adını değiştir:
+
+mv /local/shared_with_docker/doc/low_memory_compile/yolov11l.hef /local/shared_with_docker/doc/wildlife_yolo11l_hailo8.hef
+
+Kontrol et:
+
+ls -lh /local/shared_with_docker/doc/wildlife_yolo11l_hailo8.hef
+
+Host sisteminde dosya şurada bulunur:
+
+Hailo Suite klasörü/shared_with_docker/doc/wildlife_yolo11l_hailo8.hef
+
+</details>
+
 > ⚠️ **Warning:** The number after --classes must match the number of object classes used in your model
 yolov11n.hef  
 > For example:Objects[rock,paper,scissors] --> --classes 3  
