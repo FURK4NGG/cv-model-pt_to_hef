@@ -276,10 +276,10 @@ Hailo Suite klasörü/shared_with_docker/doc/wildlife_yolo11l_hailo8.hef
 </details>
 
 > ⚠️ **Warning:** The number after --classes must match the number of object classes used in your model
-yolov11n.hef  
+yolov11l.hef  
 > For example:Objects[rock,paper,scissors] --> --classes 3  
-> ⚠️ **Warning:** You can change your 'yolov11n.yaml' model in your code if there is a different one in that directory:'/local/workspace/hailo_model_zoo/hailo_model_zoo/cfg/networks'  
-5. `mv yolov11n.hef /local/shared_with_docker/doc/`
+> ⚠️ **Warning:** You can change your 'yolov11l.yaml' model in your code if there is a different one in that directory:'/local/workspace/hailo_model_zoo/hailo_model_zoo/cfg/networks'  
+5. `mv yolov11l.hef /local/shared_with_docker/doc/`
 
 ## ✅ Resoults
 `Your .hef file in that directory and waiting for you:'/home/$USER/docker_hailo/shared_with_docker/doc/'`
