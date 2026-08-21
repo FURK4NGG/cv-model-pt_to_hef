@@ -87,11 +87,15 @@ In "(hailo_virtualenv) hailo@user:" terminal:
 
 Run the following command outside the container, in the normal host terminal:
 
-`sudo journalctl -k -b | grep -Ei "out of memory|oom|killed process"`
+```bash
+sudo journalctl -k -b | grep -Ei "out of memory|oom|killed process"
+```
 
 On Arch Linux, you can also use:
 
-`sudo dmesg -T | grep -Ei "out of memory|oom|killed process"`
+```bash
+sudo dmesg -T | grep -Ei "out of memory|oom|killed process"
+```
 
 If you receive output similar to the following, the diagnosis is confirmed:
 
@@ -100,9 +104,13 @@ If you receive output similar to the following, the diagnosis is confirmed:
 
 Check the available RAM and swap:
 
-`free -h`
+```bash
+free -h
+```
 
-`swapon --show`
+```bash
+swapon --show
+```
 
 Example output:
 
@@ -113,11 +121,15 @@ Example output:
 
 Find the container name:
 
-`docker ps --format "table {{.ID}}\t{{.Names}}\t{{.Status}}"`
+```bash
+docker ps --format "table {{.ID}}\t{{.Names}}\t{{.Status}}"
+```
 
 Then use the actual container name:
 
-`docker inspect CONTAINER_NAME --format 'Memory={{.HostConfig.Memory}} MemorySwap={{.HostConfig.MemorySwap}}'`
+```bash
+docker inspect CONTAINER_NAME --format 'Memory={{.HostConfig.Memory}} MemorySwap={{.HostConfig.MemorySwap}}'
+```
 
 If the result is as follows, no custom Docker memory limit is configured:
 
@@ -125,7 +137,9 @@ If the result is as follows, no custom Docker memory limit is configured:
 
 ### 1. Find the Original YOLO11l ALLS File
 
-`find /local/workspace/hailo_model_zoo/hailo_model_zoo/cfg/alls -type f -name "yolov11l.alls"`
+```bash
+find /local/workspace/hailo_model_zoo/hailo_model_zoo/cfg/alls -type f -name "yolov11l.alls"
+```
 
 It should return a result similar to:
 
@@ -133,11 +147,15 @@ It should return a result similar to:
 
 ### 2. Store the Discovered Path in a Variable
 
-`DEFAULT_ALLS="$(find /local/workspace/hailo_model_zoo/hailo_model_zoo/cfg/alls -type f -name "yolov11l.alls" -print -quit)"`
+```bash
+DEFAULT_ALLS="$(find /local/workspace/hailo_model_zoo/hailo_model_zoo/cfg/alls -type f -name "yolov11l.alls" -print -quit)"
+```
 
 Verify it:
 
-`echo "$DEFAULT_ALLS"`
+```bash
+echo "$DEFAULT_ALLS"
+```
 
 The output must not be empty and should end with:
 
@@ -147,7 +165,9 @@ This variable only stores the file path temporarily. It does not modify any file
 
 ### 3. Display the Original Finetune Settings
 
-`sed -n '/post_quantization_optimization(finetune/,/nms_postprocess/p' "$DEFAULT_ALLS"`
+```bash
+sed -n '/post_quantization_optimization(finetune/,/nms_postprocess/p' "$DEFAULT_ALLS"
+```
 
 The end of the output should contain something similar to:
 
@@ -155,17 +175,23 @@ The end of the output should contain something similar to:
 
 ### 4. Copy the Original ALLS File to the Shared Directory
 
-`cp -f "$DEFAULT_ALLS" /local/shared_with_docker/doc/yolov11l_low_memory.alls`
+```bash
+cp -f "$DEFAULT_ALLS" /local/shared_with_docker/doc/yolov11l_low_memory.alls
+```
 
 Verify the copied file:
 
-`ls -lh /local/shared_with_docker/doc/yolov11l_low_memory.alls`
+```bash
+ls -lh /local/shared_with_docker/doc/yolov11l_low_memory.alls
+```
 
 This operation does not modify the original file inside Hailo Model Zoo.
 
 ### 5. Reduce the QAT Batch Size from 4 to 1
 
-`sed -i 's/batch_size=4)/batch_size=1)/' /local/shared_with_docker/doc/yolov11l_low_memory.alls`
+```bash
+sed -i 's/batch_size=4)/batch_size=1)/' /local/shared_with_docker/doc/yolov11l_low_memory.alls
+```
 
 This command changes only the following value:
 
@@ -183,11 +209,15 @@ The calibration setting is not modified.
 
 ### 6. Find the Actual NMS JSON File
 
-`NMS_JSON="$(find /local/workspace/hailo_model_zoo/hailo_model_zoo/cfg -type f -name "yolov11l_nms_config.json" -print -quit)"`
+```bash
+NMS_JSON="$(find /local/workspace/hailo_model_zoo/hailo_model_zoo/cfg -type f -name "yolov11l_nms_config.json" -print -quit)"
+```
 
 Verify it:
 
-`echo "$NMS_JSON"`
+```bash
+echo "$NMS_JSON"
+```
 
 Expected output:
 
@@ -195,11 +225,15 @@ Expected output:
 
 Confirm that the file exists:
 
-`ls -lh "$NMS_JSON"`
+```bash
+ls -lh "$NMS_JSON"
+```
 
 ### 7. Replace the Relative NMS Path with an Absolute Path
 
-`sed -i "s#../../postprocess_config/yolov11l_nms_config.json#$NMS_JSON#" /local/shared_with_docker/doc/yolov11l_low_memory.alls`
+```bash
+sed -i "s#../../postprocess_config/yolov11l_nms_config.json#$NMS_JSON#" /local/shared_with_docker/doc/yolov11l_low_memory.alls
+```
 
 This change is required because the custom ALLS file was copied from its original directory to:
 
@@ -207,7 +241,9 @@ This change is required because the custom ALLS file was copied from its origina
 
 ### 8. Verify All Changes
 
-`sed -n '1,15p' /local/shared_with_docker/doc/yolov11l_low_memory.alls`
+```bash
+sed -n '1,15p' /local/shared_with_docker/doc/yolov11l_low_memory.alls
+```
 
 Check the following lines in particular:
 
@@ -217,23 +253,33 @@ Check the following lines in particular:
 
 To display only the relevant section:
 
-`sed -n '/post_quantization_optimization(finetune/,/nms_postprocess/p' /local/shared_with_docker/doc/yolov11l_low_memory.alls`
+```bash
+sed -n '/post_quantization_optimization(finetune/,/nms_postprocess/p' /local/shared_with_docker/doc/yolov11l_low_memory.alls
+```
 
 The following command:
 
-`grep -nE "finetune|nms_postprocess" /local/shared_with_docker/doc/yolov11l_low_memory.alls`
+```bash
+grep -nE "finetune|nms_postprocess" /local/shared_with_docker/doc/yolov11l_low_memory.alls
+```
 
 only displays the first line containing the word `finetune`. Because `batch_size=1` is located on the following line, it is not displayed. Use the `sed` command above to inspect the complete block.
 
 ### 9. Prepare a New Compilation Directory
 
-`mkdir -p /local/shared_with_docker/doc/low_memory_compile`
+```bash
+mkdir -p /local/shared_with_docker/doc/low_memory_compile
+```
 
-`cd /local/shared_with_docker/doc/low_memory_compile`
+```bash
+cd /local/shared_with_docker/doc/low_memory_compile
+```
 
 To view any existing parsed intermediate files:
 
-`ls -lah`
+```bash
+ls -lah
+```
 
 A `yolov11l.har` file may remain from a previous failed attempt. The new command may recreate it; this is not a problem.
 
@@ -241,7 +287,9 @@ A `yolov11l.har` file may remain from a previous failed attempt. The new command
 
 As a single-line command:
 
-`hailomz compile --ckpt /local/shared_with_docker/models/model.onnx --calib-path /local/shared_with_docker/doc/calib --yaml /local/workspace/hailo_model_zoo/hailo_model_zoo/cfg/networks/yolov11l.yaml --model-script /local/shared_with_docker/doc/yolov11l_low_memory.alls --classes 7 --hw-arch hailo8`
+```bash
+hailomz compile --ckpt /local/shared_with_docker/models/model.onnx --calib-path /local/shared_with_docker/doc/calib --yaml /local/workspace/hailo_model_zoo/hailo_model_zoo/cfg/networks/yolov11l.yaml --model-script /local/shared_with_docker/doc/yolov11l_low_memory.alls --classes 7 --hw-arch hailo8
+```
 
 Meaning of the settings:
 
@@ -274,7 +322,9 @@ This operation takes longer than the previous attempt, but its instantaneous RAM
 
 Inside the container:
 
-`find /local/shared_with_docker/doc/low_memory_compile -type f -name "*.hef"`
+```bash
+find /local/shared_with_docker/doc/low_memory_compile -type f -name "*.hef"
+```
 
 The expected file should be located approximately at:
 
@@ -282,18 +332,21 @@ The expected file should be located approximately at:
 
 Rename the file:
 
-`mv /local/shared_with_docker/doc/low_memory_compile/yolov11l.hef /local/shared_with_docker/doc/wildlife_yolo11l_hailo8.hef`
+```bash
+mv /local/shared_with_docker/doc/low_memory_compile/yolov11l.hef /local/shared_with_docker/doc/wildlife_yolo11l_hailo8.hef
+```
 
 Verify it:
 
-`ls -lh /local/shared_with_docker/doc/wildlife_yolo11l_hailo8.hef`
+```bash
+ls -lh /local/shared_with_docker/doc/wildlife_yolo11l_hailo8.hef
+```
 
 On the host system, the file can be found at:
 
 > Hailo Suite directory/shared_with_docker/doc/wildlife_yolo11l_hailo8.hef
 
 </details>
-
 
 > ⚠️ **Warning:** The number after --classes must match the number of object classes used in your model
 yolov11l.hef  
