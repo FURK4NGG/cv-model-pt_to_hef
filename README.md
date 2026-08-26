@@ -8,6 +8,7 @@
 Follow these steps:
    <details>
    <summary>Ubuntu Setup</summary>
+      
    ```bash
    sudo apt update
    sudo apt upgrade -y
