@@ -250,7 +250,7 @@ docker run hello-world
 
 ```bash
 ============================================================
-             FINAL VERIFICATION — LINUX
+               FINAL VERIFICATION — LINUX
 ============================================================
 
 # Check Docker service
