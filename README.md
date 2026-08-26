@@ -330,7 +330,7 @@ The expected file should be located approximately at:
 
 > /local/shared_with_docker/doc/low_memory_compile/yolov11l.hef
 
-Rename the file:
+Move and rename the file:
 
 ```bash
 mv /local/shared_with_docker/doc/low_memory_compile/yolov11l.hef /local/shared_with_docker/doc/wildlife_yolo11l_hailo8.hef
