@@ -6,44 +6,45 @@
 <summary>1. Prepare docker enviroment </summary>
 
 Follow these steps:
-<details>
-<summary>Ubuntu Setup</summary>
-```bash
-sudo apt update
-sudo apt upgrade -y
+   <details>
+   <summary>Ubuntu Setup</summary>
+   ```bash
+   sudo apt update
+   sudo apt upgrade -y
+   
+   sudo apt install -y apt-transport-https ca-certificates curl software-properties-common
+   
+   curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+   
+   echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+   
+   sudo apt update
+   sudo apt install -y docker-ce docker-ce-cli containerd.io
+   
+   sudo systemctl start docker
+   sudo systemctl enable docker
+   
+   docker --version
+   sudo docker run hello-world
+   
+   
+   
+   
+   sudo systemctl stop docker.socket
+   sudo systemctl stop docker.service
+   
+   sudo systemctl status docker
+   sudo systemctl status docker.socket
+   
+   sudo mv /var/lib/docker /home/$USER/docker_data
+   sudo ln -s /home/$USER/docker_data /var/lib/docker
+   
+   sudo systemctl start docker
+   sudo systemctl enable docker
+   
+   Docker Root Dir: /home/$USER/docker_data
+   ```
 
-sudo apt install -y apt-transport-https ca-certificates curl software-properties-common
-
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
-
-echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-
-sudo apt update
-sudo apt install -y docker-ce docker-ce-cli containerd.io
-
-sudo systemctl start docker
-sudo systemctl enable docker
-
-docker --version
-sudo docker run hello-world
-
-
-
-
-sudo systemctl stop docker.socket
-sudo systemctl stop docker.service
-
-sudo systemctl status docker
-sudo systemctl status docker.socket
-
-sudo mv /var/lib/docker /home/$USER/docker_data
-sudo ln -s /home/$USER/docker_data /var/lib/docker
-
-sudo systemctl start docker
-sudo systemctl enable docker
-
-Docker Root Dir: /home/$USER/docker_data
-```
 </details>
 </details>
 
