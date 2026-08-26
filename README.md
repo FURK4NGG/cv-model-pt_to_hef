@@ -6,46 +6,405 @@
 <summary>1. Prepare docker enviroment </summary>
 
 Follow these steps:
-   <details>
-   <summary>Ubuntu Setup</summary>
-      
-   ```bash
-   sudo apt update
-   sudo apt upgrade -y
-   
-   sudo apt install -y apt-transport-https ca-certificates curl software-properties-common
-   
-   curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
-   
-   echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-   
-   sudo apt update
-   sudo apt install -y docker-ce docker-ce-cli containerd.io
-   
-   sudo systemctl start docker
-   sudo systemctl enable docker
-   
-   docker --version
-   sudo docker run hello-world
-   
-   
-   
-   
-   sudo systemctl stop docker.socket
-   sudo systemctl stop docker.service
-   
-   sudo systemctl status docker
-   sudo systemctl status docker.socket
-   
-   sudo mv /var/lib/docker /home/$USER/docker_data
-   sudo ln -s /home/$USER/docker_data /var/lib/docker
-   
-   sudo systemctl start docker
-   sudo systemctl enable docker
-   
-   Docker Root Dir: /home/$USER/docker_data
-   ```
+<details>
+<summary>Linux</summary>
 
+<details>
+<summary>Arch Setup</summary>
+
+```bash
+# Update the system
+sudo pacman -Syu
+
+# Install Docker, Buildx and Compose
+sudo pacman -S docker docker-buildx docker-compose
+
+# Start Docker and enable it at boot
+sudo systemctl enable --now docker
+
+# Check Docker
+docker --version
+
+# Test Docker
+sudo docker run hello-world
+
+
+# ----------------------------------------------------------
+# Move Docker data to:
+# /home/$USER/docker_data
+# ----------------------------------------------------------
+
+# Stop Docker
+sudo systemctl stop docker.socket
+sudo systemctl stop docker.service
+
+# Create the new Docker data directory
+sudo mkdir -p "/home/$USER/docker_data"
+
+# Copy existing Docker data
+sudo rsync -aP \
+    /var/lib/docker/ \
+    "/home/$USER/docker_data/"
+
+# Configure Docker
+sudo mkdir -p /etc/docker
+
+sudo tee /etc/docker/daemon.json > /dev/null <<EOF
+{
+  "data-root": "/home/$USER/docker_data"
+}
+EOF
+
+# Start Docker
+sudo systemctl enable --now docker
+
+# Verify Docker Root Dir
+docker info | grep "Docker Root Dir"
+
+
+# Expected:
+# Docker Root Dir: /home/YOUR_USERNAME/docker_data
+
+
+# ----------------------------------------------------------
+# Optional: allow Docker without sudo
+# ----------------------------------------------------------
+
+sudo usermod -aG docker "$USER"
+
+# Log out and log back in before using Docker without sudo.
+
+# Test:
+docker run hello-world
+```
+</details>
+
+<details>
+<summary>Ubuntu Setup</summary>
+      
+```bash
+# Update the system
+sudo apt update
+sudo apt upgrade -y
+
+# Install required packages
+sudo apt install -y ca-certificates curl
+
+# Add Docker's official GPG key
+sudo install -m 0755 -d /etc/apt/keyrings
+
+sudo curl -fsSL \
+    https://download.docker.com/linux/ubuntu/gpg \
+    -o /etc/apt/keyrings/docker.asc
+
+sudo chmod a+r /etc/apt/keyrings/docker.asc
+
+# Add Docker's official repository
+sudo tee /etc/apt/sources.list.d/docker.sources > /dev/null <<EOF
+Types: deb
+URIs: https://download.docker.com/linux/ubuntu
+Suites: $(. /etc/os-release && echo "${UBUNTU_CODENAME:-$VERSION_CODENAME}")
+Components: stable
+Architectures: $(dpkg --print-architecture)
+Signed-By: /etc/apt/keyrings/docker.asc
+EOF
+
+# Update package lists
+sudo apt update
+
+# Install Docker Engine and related components
+sudo apt install -y \
+    docker-ce \
+    docker-ce-cli \
+    containerd.io \
+    docker-buildx-plugin \
+    docker-compose-plugin
+
+# Start Docker and enable it at boot
+sudo systemctl enable --now docker
+
+# Check Docker
+docker --version
+
+# Test Docker
+sudo docker run hello-world
+
+
+# ----------------------------------------------------------
+# Move Docker data to:
+# /home/$USER/docker_data
+# ----------------------------------------------------------
+
+# Stop Docker
+sudo systemctl stop docker.socket
+sudo systemctl stop docker.service
+
+# Create the new Docker data directory
+sudo mkdir -p "/home/$USER/docker_data"
+
+# Copy existing Docker data
+sudo rsync -aP \
+    /var/lib/docker/ \
+    "/home/$USER/docker_data/"
+
+# Configure Docker
+sudo mkdir -p /etc/docker
+
+sudo tee /etc/docker/daemon.json > /dev/null <<EOF
+{
+  "data-root": "/home/$USER/docker_data"
+}
+EOF
+
+# Start Docker
+sudo systemctl enable --now docker
+
+# Verify Docker Root Dir
+docker info | grep "Docker Root Dir"
+
+
+# Expected:
+# Docker Root Dir: /home/YOUR_USERNAME/docker_data
+```
+</details>
+
+<details>
+<summary>Fedora Setup</summary>
+   
+```bash
+# Update the system
+sudo dnf upgrade -y
+
+# Add Docker's official repository
+sudo dnf config-manager addrepo \
+    --from-repofile \
+    https://download.docker.com/linux/fedora/docker-ce.repo
+
+# Install Docker Engine and related components
+sudo dnf install -y \
+    docker-ce \
+    docker-ce-cli \
+    containerd.io \
+    docker-buildx-plugin \
+    docker-compose-plugin
+
+# Start Docker and enable it at boot
+sudo systemctl enable --now docker
+
+# Check Docker
+docker --version
+
+# Test Docker
+sudo docker run hello-world
+
+
+# ----------------------------------------------------------
+# Move Docker data to:
+# /home/$USER/docker_data
+# ----------------------------------------------------------
+
+# Stop Docker
+sudo systemctl stop docker.socket
+sudo systemctl stop docker.service
+
+# Create the new Docker data directory
+sudo mkdir -p "/home/$USER/docker_data"
+
+# Copy existing Docker data
+sudo rsync -aP \
+    /var/lib/docker/ \
+    "/home/$USER/docker_data/"
+
+# Configure Docker
+sudo mkdir -p /etc/docker
+
+sudo tee /etc/docker/daemon.json > /dev/null <<EOF
+{
+  "data-root": "/home/$USER/docker_data"
+}
+EOF
+
+# Start Docker
+sudo systemctl enable --now docker
+
+# Verify Docker Root Dir
+docker info | grep "Docker Root Dir"
+
+
+# Expected:
+# Docker Root Dir: /home/YOUR_USERNAME/docker_data
+
+
+# ----------------------------------------------------------
+# Optional: allow Docker without sudo
+# ----------------------------------------------------------
+
+sudo usermod -aG docker "$USER"
+
+# Log out and log back in.
+
+# Test:
+docker run hello-world
+```   
+</details>
+
+```bash
+============================================================
+             FINAL VERIFICATION — LINUX
+============================================================
+
+# Check Docker service
+sudo systemctl status docker
+
+# Check Docker version
+docker --version
+
+# Check Docker Root Dir
+docker info | grep "Docker Root Dir"
+
+# Check Docker storage
+docker info
+
+# Test container
+docker run hello-world
+```
+</details>
+
+<details>
+<summary>Windows Setup</summary>
+
+```bash
+# ----------------------------------------------------------
+# Run these commands in PowerShell as Administrator
+# ----------------------------------------------------------
+
+# Install WSL 2
+wsl --install
+
+# Update WSL
+wsl --update
+
+# Verify WSL
+wsl --version
+
+# Set WSL 2 as the default
+wsl --set-default-version 2
+
+
+# ----------------------------------------------------------
+# Install Docker Desktop
+# ----------------------------------------------------------
+
+# Download and install Docker Desktop for Windows.
+#
+# During installation select:
+#
+#     Use WSL 2 instead of Hyper-V
+#
+# WSL 2 is the recommended backend for the normal
+# Docker Desktop Linux-container workflow.
+
+
+# ----------------------------------------------------------
+# Optional command-line installation
+# ----------------------------------------------------------
+
+# If the Docker Desktop installer is located in the
+# current directory:
+
+Start-Process `
+    ".\Docker Desktop Installer.exe" `
+    -Wait `
+    -ArgumentList "install", "--backend=wsl-2"
+
+
+# ----------------------------------------------------------
+# Set the Docker Desktop WSL data location
+# ----------------------------------------------------------
+
+# Example:
+# Move Docker Desktop's WSL data to:
+#
+#     D:\DockerData
+#
+# The Docker Desktop installer supports:
+#
+#     --wsl-default-data-root=<path>
+
+Start-Process `
+    ".\Docker Desktop Installer.exe" `
+    -Wait `
+    -ArgumentList `
+        "install",
+        "--backend=wsl-2",
+        "--wsl-default-data-root=D:\DockerData"
+
+
+# ----------------------------------------------------------
+# If Docker Desktop is already installed
+# ----------------------------------------------------------
+#
+# Open:
+#
+# Docker Desktop
+#     -> Settings
+#     -> Resources
+#     -> Advanced
+#
+# Change the Docker/WSL disk image location to:
+#
+#     D:\DockerData
+#
+# ----------------------------------------------------------
+
+
+# Start Docker Desktop manually from Windows if necessary.
+
+
+# ----------------------------------------------------------
+# Test Docker from PowerShell
+# ----------------------------------------------------------
+
+docker --version
+
+docker run hello-world
+
+
+# ----------------------------------------------------------
+# Test Docker from WSL
+# ----------------------------------------------------------
+
+wsl
+
+docker --version
+
+docker run hello-world
+
+
+# Docker commands should now work from the integrated
+# WSL distribution as well.
+
+
+============================================================
+              FINAL VERIFICATION — WINDOWS
+============================================================
+
+# PowerShell:
+
+docker --version
+
+docker info
+
+docker run hello-world
+
+# WSL:
+
+wsl
+
+docker info
+
+docker run hello-world
+```
 </details>
 </details>
 
