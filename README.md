@@ -6,6 +6,8 @@
 <summary>1. Prepare docker enviroment </summary>
 
 Follow these steps:
+<details>
+<summary>Ubuntu Setup</summary>
 ```bash
 sudo apt update
 sudo apt upgrade -y
@@ -42,6 +44,7 @@ sudo systemctl enable docker
 
 Docker Root Dir: /home/$USER/docker_data
 ```
+</details>
 </details>
 
 2. `Go to the`[`HAILO AI DEVELOPER ZONE`](https://hailo.ai/developer-zone/software-downloads/)`adress and download .zip file with this configration: Software Package[AI Software Suite], Software Sub-Package[AI Software Suite], Architecture[x86], OS[Linux], Python Version[3.8]`
