@@ -270,8 +270,8 @@ docker run hello-world
 ```
 </details>
 
-<details>
-<summary>Windows Setup</summary>
+#<details>
+#<summary>Windows Setup</summary>
 
 ```bash
 # ----------------------------------------------------------
@@ -405,7 +405,7 @@ docker info
 
 docker run hello-world
 ```
-</details>
+#</details>
 </details>
 
 2. `Go to the`[`HAILO AI DEVELOPER ZONE`](https://hailo.ai/developer-zone/software-downloads/)`adress and download .zip file with this configration: Software Package[AI Software Suite], Software Sub-Package[AI Software Suite], Architecture[x86], OS[Linux], Python Version[3.8]`
